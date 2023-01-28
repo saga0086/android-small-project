@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Acronym and initialism Lookup</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="user_input_fragment_label">User input Fragment</string>
+    <string name="fullform_fragment_label">Fullform Fragment</string>
+    <string name="hint_acronym_input">input acronym here</string>
+    <string name="lookup">look up</string>
+    <string name="next">Next</string>
+    <string name="go_back">Go back</string>
+</resources>

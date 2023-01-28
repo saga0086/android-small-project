@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/UserInputFragment">
+
+    <fragment
+        android:id="@+id/UserInputFragment"
+        android:name="com.example.acronymlookup.UserInputFragment"
+        android:label="@string/user_input_fragment_label"
+        tools:layout="@layout/fragment_user_input">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/FullformFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/FullformFragment"
+        android:name="com.example.acronymlookup.FullformFragment"
+        android:label="@string/fullform_fragment_label"
+        tools:layout="@layout/fragment_fullform">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/UserInputFragment" />
+    </fragment>
+</navigation>
