@@ -17,15 +17,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RemoteAcronymLookupService : AcronymLookupService {
     val BASE_URL = "http://www.nactem.ac.uk"
-
-    override fun lookup(acronym: String, listener: LookupListener<List<LookupData>>) {
-        val okHttpClient = OkHttpClient()
-        val retrofit: Retrofit = Retrofit.Builder()
-            .client(okHttpClient)
+    val okHttpClient: OkHttpClient
+    var retrofit: Retrofit
+    init {
+        okHttpClient = OkHttpClient()
+        retrofit = Retrofit.Builder().client(okHttpClient)
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        val apiService: LookupApiService = retrofit.create(LookupApiService::class.java)
+    }
+
+    override fun lookup(acronym: String, listener: LookupListener<List<LookupData>>) {
+        val apiService: LookupApiService = this.retrofit.create(LookupApiService::class.java)
         val callable: Call<List<LookupData>> = apiService.getFullForm(acronym)
         callable.enqueue(object : Callback<List<LookupData>> {
             override fun onResponse(call: Call<List<LookupData>>?, response: Response<List<LookupData>>) {

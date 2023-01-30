@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.acronymlookup.databinding.FragmentFullformBinding
 import com.example.acronymlookup.datamodel.Fullform
 import com.example.acronymlookup.datamodel.LookupData
+import com.example.acronymlookup.datasource.AcronymLookupService
 import com.example.acronymlookup.datasource.LookupListener
 import com.example.acronymlookup.datasource.remote.RemoteAcronymLookupService
 
@@ -24,7 +25,7 @@ import com.example.acronymlookup.datasource.remote.RemoteAcronymLookupService
 const val KEY_USER_INPUT = "userInput"
 class FullformFragment : Fragment() {
     private lateinit var binding: FragmentFullformBinding
-    private val viewModel = LookupViewModel()
+    private lateinit var viewModel: LookupViewModel
     private lateinit var adapter: FullformAdapter
     private lateinit var userInput: String
 
@@ -32,6 +33,7 @@ class FullformFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        this.viewModel = LookupViewModel(RemoteAcronymLookupService())
         this.binding = FragmentFullformBinding.inflate(inflater, container, false)
         this.binding.viewModel = this.viewModel
         this.binding.lifecycleOwner = this
@@ -60,31 +62,31 @@ class FullformFragment : Fragment() {
         this.viewModel.fetchData(this.userInput)
     }
 
-    inner class LookupViewModel {
+    inner class LookupViewModel(service: AcronymLookupService) {
+        val lookupService = service
         val isLoading: MutableLiveData<Boolean> = MutableLiveData()
         val errorMessage: MutableLiveData<String> = MutableLiveData()
+        val lookupListener = object: LookupListener<List<LookupData>> {
+            override fun onSuccess(data: List<LookupData>) {
+                isLoading.value = false
+                if (data.isEmpty() || data[0].lfs.isEmpty()) {
+                    errorMessage.value = "Full form is not found..."
+                } else{
+                    adapter.getDataList().addAll(data[0].lfs)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            override fun onFailure(error: String) {
+                isLoading.value = false
+                errorMessage.value = error
+            }
+        }
 
         fun fetchData(name: String) {
             isLoading.value = true
             errorMessage.value = ""
-            val listener = object: LookupListener<List<LookupData>> {
-                override fun onSuccess(data: List<LookupData>) {
-                    isLoading.value = false
-                    if (data.isEmpty() || data[0].lfs.isEmpty()) {
-                        errorMessage.value = "Did not find full form of " + name
-                    } else{
-                        adapter.getDataList().addAll(data[0].lfs)
-                        adapter.notifyDataSetChanged()
-                    }
-                }
-                override fun onFailure(error: String) {
-                    isLoading.value = false
-                    errorMessage.value = error
-                }
-            }
 
-            val lookupService = RemoteAcronymLookupService()
-            lookupService.lookup(name, listener)
+            lookupService.lookup(name, lookupListener)
         }
     }
 }
