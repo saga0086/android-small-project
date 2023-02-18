@@ -37,7 +37,7 @@ class UserInputFragment : Fragment() {
             val bundle = Bundle()
             bundle.putString(KEY_USER_INPUT, this.binding.textInput.text.toString())
             fragment.arguments = bundle
-            transaction.replace(R.id.nav_host_fragment_content_main, fragment)
+            transaction.replace(R.id.fragment_content, fragment)
             transaction.commit()
         }
     }

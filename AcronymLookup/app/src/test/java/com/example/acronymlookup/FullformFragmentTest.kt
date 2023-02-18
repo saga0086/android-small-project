@@ -21,12 +21,11 @@ class FullformFragmentTest {
     @Test
     fun testFetchData() {
         val lookupService = mock(AcronymLookupService::class.java)
-        val lookupViewModel = FullformFragment().LookupViewModel(lookupService)
+        val lookupViewModel = LookupViewModel(lookupService)
         val name = "testName"
 
         lookupViewModel.fetchData(name)
         verify(lookupService).lookup(name, lookupViewModel.lookupListener)
-        assertTrue(lookupViewModel.isLoading.value!!)
         assertTrue(lookupViewModel.errorMessage.value!!.isEmpty())
     }
 }

@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         val transaction = supportFragmentManager.beginTransaction()
         val fragment = UserInputFragment()
-        transaction.add(R.id.nav_host_fragment_content_main, fragment)
+        transaction.replace(R.id.fragment_content, fragment)
         transaction.commit()
     }
 
@@ -50,10 +50,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
+    /*override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
-    }
+    }*/
 
 }
