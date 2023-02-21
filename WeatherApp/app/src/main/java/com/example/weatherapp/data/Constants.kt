@@ -10,4 +10,6 @@ object Constants {
     const val SHARED_PREF_KEY_CUR_WEATHER = "cur_weather"
 
     const val SHARED_PREF_KEY_FORECAST_WEATHER = "forecast_weather"
+    
+    const val ICON_PREFIX = "@drawable/img_"
 }

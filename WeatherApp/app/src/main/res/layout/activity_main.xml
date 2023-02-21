@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/hint_search_weather"
-            app:layout_constraintBottom_toTopOf="@id/cur_weather"
+            app:layout_constraintBottom_toTopOf="@id/condition_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintRight_toLeftOf="@id/button_search"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,18 +33,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/search"
-            app:layout_constraintBottom_toTopOf="@id/cur_weather"
+            app:layout_constraintBottom_toTopOf="@id/condition_icon"
             app:layout_constraintLeft_toRightOf="@id/text_input" />
 
+        <ImageView
+            android:id="@+id/condition_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/cur_weather"
+            app:layout_constraintTop_toBottomOf="@id/text_input"/>
         <TextView
             android:id="@+id/cur_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{`  ` + curWeather.cityName + `,  ` + curWeather.country + `\nTemperature:  ` + curWeather.temp + ` F` + `\nFeels like: ` + curWeather.feels_like + ` F` + `\nCondition:  ` + curWeather.weatherName + `\nTime:     ` + curWeather.timeStamp + `\n    `}"
+            android:text="@{`  ` + curWeather.cityName + `,  ` + curWeather.country + `\nTemperature: ` + curWeather.temp + ` F` + `\nFeels like:     ` + curWeather.feels_like + ` F` + `\nCondition:    ` + curWeather.weatherName + `\nTime:        ` + curWeather.timeStamp + `\n    `}"
             app:layout_constraintBottom_toTopOf="@id/recyclerview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_input" />
+            app:layout_constraintTop_toBottomOf="@id/condition_icon" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
