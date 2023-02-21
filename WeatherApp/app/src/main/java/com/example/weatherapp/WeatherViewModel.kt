@@ -1,15 +1,21 @@
 package com.example.weatherapp
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.location.LocationManager
 import android.util.Log
+import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.data.*
 import com.example.weatherapp.datasource.remote.WeatherFetchCallback
 import com.example.weatherapp.datasource.remote.WeatherFetchService
+import com.example.weatherapp.extensions.awaitCurrentLocation
 import com.example.weatherapp.util.WeatherDataTransfer
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(application: Application) : AndroidViewModel(application) {
@@ -161,6 +167,31 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                 WeatherDataTransfer.get().convertForecastWeatherToJsonString(weatherForecast.value!!))
             editor.apply()
             Log.d(tag, "forecast weather saved.")
+        }
+    }
+
+    /**
+     *  Request current location update and then fetch weather data in this location.
+     *  @param locationManager the LocationManager service
+     *  @param activity the calling activity
+     * **/
+    fun fetchWeatherDataWithCurrentLocation(locationManager: LocationManager, activity: Activity) {
+        if(LocationManagerCompat.isLocationEnabled(locationManager)) {
+            Log.d(tag, "location is granted, fetch current location's weather.")
+            val priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            viewModelScope.launch {
+                val location = LocationServices
+                    .getFusedLocationProviderClient(activity)
+                    .awaitCurrentLocation(priority)
+                if (location != null) {
+                    fetchCurrentWeather(location.latitude, location.longitude)
+                    fetchForecastWeather(location.latitude, location.longitude)
+                } else {
+                    Log.d(tag, "location returned is null.")
+                }
+            }
+        } else {
+            Log.d(tag, "Location is not granted.")
         }
     }
 }

@@ -1,8 +1,14 @@
 package com.example.weatherapp
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +21,17 @@ import com.example.weatherapp.data.Constants.ICON_PREFIX
 
 class MainActivity : AppCompatActivity() {
     private val tag = "MainActivity"
+    val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission())
+        { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission is granted. Load current location's weather
+                val locationManager =
+                    getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                viewModel
+                    .fetchWeatherDataWithCurrentLocation(locationManager, this)
+            }
+        }
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: WeatherViewModel
     private lateinit var adapter: WeatherForecastAdapter
@@ -25,14 +42,32 @@ class MainActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+
         setupRecyclerViewAndObserve()
+
         binding.buttonSearch.setOnClickListener {
-            Log.d(tag, "button clicked, search for ")
             val userInput = binding.textInput.text.toString()
+            Log.d(tag, "button clicked, search for $userInput")
             it.isEnabled = false
             viewModel.fetchCurrentWeather(userInput)
             viewModel.fetchForecastWeather(userInput)
         }
+
+        checkLocationPermission()
+    }
+
+    /**
+     *  Check if location permission is granted.
+     *  If not granted, request permission from user.
+     * **/
+    fun checkLocationPermission() {
+           if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+               Log.d(tag, "location permission not granted, ask user.")
+               requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
     }
 
     /**
