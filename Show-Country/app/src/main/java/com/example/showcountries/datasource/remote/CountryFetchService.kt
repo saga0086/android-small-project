@@ -43,9 +43,9 @@ class CountryFetchService {
             override fun onResponse(call: Call<List<CountryResponseData>>?, response: Response<List<CountryResponseData>>) {
                 Log.d(tag, "got response")
                 val data = response.body();
-                if (data != null) {
-                    listener.onSuccess(data)
-                } else{
+                data?.let {
+                    listener.onSuccess(it)
+                } ?: kotlin.run {
                     listener.onFailure("returned data is null!")
                 }
             }
