@@ -11,7 +11,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class CountryFetchService {
+class CountryFetchService private constructor(){
     companion object {
         private var instance: CountryFetchService? = null
             get() {

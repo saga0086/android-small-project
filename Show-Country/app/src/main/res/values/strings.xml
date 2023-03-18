@@ -2,4 +2,5 @@
     <string name="app_name">Show Countries</string>
     <string name="title_loading_country">Loading country list…</string>
     <string name="tile_country_list">Country List:</string>
+    <string name="tile_country_not_available">Country List Not available</string>
 </resources>
