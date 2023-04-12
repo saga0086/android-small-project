@@ -6,9 +6,15 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.showcountries.callback.CountryDiffUtilCallback
 import com.example.showcountries.data.Country
 import com.example.showcountries.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private val tag = "MainActivity"
@@ -43,13 +49,17 @@ class MainActivity : AppCompatActivity() {
         viewModel.countries.observe(this, object : Observer<List<Country>?> {
             override fun onChanged(data: List<Country>?) {
                 Log.d(tag, "country list onChanged")
-                adapter.getDataList().clear()
-                data?.let {
-                    adapter.getDataList().addAll(it)
-                } ?: kotlin.run {
-                    Log.d(tag, "country list is null")
+                lifecycleScope.launch(Dispatchers.Main) {
+                    data?.let {
+                        val diffResult = withContext(Dispatchers.IO) {
+                            DiffUtil.calculateDiff(CountryDiffUtilCallback(adapter.getDataList(), it))
+                        }
+                        diffResult.dispatchUpdatesTo(adapter)
+                        adapter.setDataList(it)
+                    } ?: kotlin.run {
+                        Log.d(tag, "country list is null")
+                    }
                 }
-                adapter.notifyDataSetChanged()
             }
         })
 

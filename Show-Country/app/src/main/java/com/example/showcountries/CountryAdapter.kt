@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.showcountries.data.Country
 import com.example.showcountries.databinding.ItemCountryBinding
 
-class CountryAdapter(private val data: MutableList<Country>):
+class CountryAdapter(private var data: List<Country>):
     RecyclerView.Adapter<CountryAdapter.CountryViewHolder>(){
     override fun onCreateViewHolder(viewGroup: ViewGroup, type: Int): CountryViewHolder {
         val layoutInflater = LayoutInflater.from(viewGroup.context)
@@ -22,8 +22,12 @@ class CountryAdapter(private val data: MutableList<Country>):
         return this.data.size
     }
 
-    fun getDataList(): MutableList<Country>{
+    fun getDataList(): List<Country>{
         return this.data
+    }
+
+    fun setDataList(newData: List<Country>) {
+        this.data = newData
     }
 
     inner class CountryViewHolder(private val binding: ItemCountryBinding) : RecyclerView.ViewHolder(binding.root) {
