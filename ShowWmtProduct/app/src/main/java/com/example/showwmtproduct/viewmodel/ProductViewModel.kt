@@ -130,4 +130,10 @@ class ProductViewModel(app: Application): AndroidViewModel(app) {
     fun getOffsetByPageNumber(pageNumber: Int): Int{
         return (pageNumber - 1) * LIMIT_PER_PAGE
     }
+
+    fun getData(): List<Product> {
+        val list = mutableListOf<Product>()
+        list.addAll(internal_products)
+        return list
+    }
 }
