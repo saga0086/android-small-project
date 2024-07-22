@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.showwmtproduct.MainActivity
+import com.example.showwmtproduct.R
 import com.example.showwmtproduct.data.Product
 import com.example.showwmtproduct.databinding.ItemProductBinding
 import com.example.showwmtproduct.databinding.ProductListFragmentBinding
@@ -61,6 +63,7 @@ class ProductListFragment: Fragment() {
 
     fun loadAndObserver() {
         Log.d(tag, "loadAndObserver()")
+        showProgressBig()
         viewModel?.loadProductList()
         observerData()
     }
@@ -81,6 +84,7 @@ class ProductListFragment: Fragment() {
                     } ?: kotlin.run {
                         Log.d(tag, "Product list is null")
                     }
+                    hideProgress()
                 }
             }
         })
@@ -99,6 +103,7 @@ class ProductListFragment: Fragment() {
                 if (!recyclerView.canScrollVertically(1)
                     && viewModel?.hasMoreProduct() == true && viewModel?.isLoading() != true
                 ) {
+                    showProgressSmall()
                     loadMoreProduct(adapter.itemCount)
                 }
             }
@@ -116,6 +121,37 @@ class ProductListFragment: Fragment() {
     fun loadMoreProduct(offset: Int) {
         Log.i(tag, "loadMoreProduct called.")
         this.viewModel?.addProductListByOffset(offset)
+    }
+
+    /**
+     *  Show progress bar animation(big bar)
+     * */
+    fun showProgressBig() {
+        Log.d(tag, "showProgressBig called.")
+        binding.progressBar.setImageResource(R.drawable.progress_bar1_big)
+        val anm = AnimationUtils
+            .loadAnimation(context, R.anim.progress_bar)
+        binding.progressBar.startAnimation(anm)
+    }
+
+    /**
+     *  Show progress bar animation(small bar)
+     * */
+    fun showProgressSmall() {
+        Log.d(tag, "showProgressSmall called.")
+        binding.progressBar.setImageResource(R.drawable.progress_bar1_small)
+        val anm = AnimationUtils
+            .loadAnimation(context, R.anim.progress_bar)
+        binding.progressBar.startAnimation(anm)
+    }
+
+    /**
+     *  Hide the progress bar.
+     * */
+    fun hideProgress() {
+        Log.d(tag, "hideProgress called.")
+        binding.progressBar.clearAnimation()
+        binding.progressBar.visibility = View.GONE
     }
 
     inner class PtAdapter(private var data: List<Product>):

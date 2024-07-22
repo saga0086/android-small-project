@@ -136,4 +136,6 @@ class ProductViewModel(app: Application): AndroidViewModel(app) {
         list.addAll(internal_products)
         return list
     }
+
+    fun getDataSize() = internal_products.size
 }
