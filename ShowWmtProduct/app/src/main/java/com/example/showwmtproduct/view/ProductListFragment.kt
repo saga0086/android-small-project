@@ -1,11 +1,14 @@
 package com.example.showwmtproduct.view
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +27,8 @@ class ProductListFragment: Fragment() {
     private var viewModel: ProductViewModel? = null
     private lateinit var binding: ProductListFragmentBinding
     private lateinit var adapter: PtAdapter
+    private var pb_big: Drawable? = null
+    private var pb_small: Drawable? = null
     companion object {
         fun newInstance(vm: ProductViewModel): ProductListFragment {
             val fragment = ProductListFragment()
@@ -69,6 +74,10 @@ class ProductListFragment: Fragment() {
 
         this.binding = ProductListFragmentBinding.inflate(inflater)
         setupRecyclerView()
+        this.pb_big = AppCompatResources
+            .getDrawable(requireContext(), R.drawable.progress_bar1_big)
+        this.pb_small = AppCompatResources
+            .getDrawable(requireContext(), R.drawable.progress_bar1_small)
 
         viewModel?.let {
             if (it.getDataSize() == 0) {
@@ -159,7 +168,7 @@ class ProductListFragment: Fragment() {
     private fun showProgressBig() {
         Log.d(tag, "showProgressBig called.")
         binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.setImageResource(R.drawable.progress_bar1_big)
+        binding.progressBar.setImageDrawable(pb_big)
         val anm = AnimationUtils
             .loadAnimation(context, R.anim.progress_bar)
         binding.progressBar.startAnimation(anm)
@@ -171,7 +180,16 @@ class ProductListFragment: Fragment() {
     fun showProgressSmall() {
         Log.d(tag, "showProgressSmall called.")
         binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.setImageResource(R.drawable.progress_bar1_small)
+        binding.progressBar.setImageDrawable(pb_small)
+
+        val set = ConstraintSet()
+        set.clone(binding.listLayout)
+        set.connect(binding.progressBar.id, ConstraintSet.TOP,
+            binding.listItem.id, ConstraintSet.BOTTOM)
+        set.connect(binding.progressBar.id, ConstraintSet.BOTTOM,
+            binding.listLayout.id, ConstraintSet.BOTTOM)
+        set.applyTo(binding.listLayout)
+
         val anm = AnimationUtils
             .loadAnimation(context, R.anim.progress_bar)
         binding.progressBar.startAnimation(anm)
