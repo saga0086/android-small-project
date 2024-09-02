@@ -84,6 +84,22 @@
     </script>
     <noscript id="noscript-css"><style>body,.s-topbar{margin-top:1.9em}</style></noscript>
 </head>
+
+<script type="text/javascript">
+           function initViewport(designedSize) {
+                const scale = window.innerWidth / designedSize
+                let meta = document.querySelector('meta[name=viewport]')
+                let content = `width=${designedSize}, init-scale=${scale}, user-scalable=no`
+                if(!meta) {
+                    meta = document.createElement('meta')
+                    meta.setAttribute('name', 'viewport')
+                    document.head.appendChild(meta)
+                }
+                meta.setAttribute('content', content)
+           }
+           initViewport(400)
+</script>
+
 <body class="question-page unified-theme">
 
 
